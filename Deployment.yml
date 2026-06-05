@@ -1,0 +1,20 @@
+---This is the yaml file to create Deployment that will creates ReplicaSet-->Pods-->Containers
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flm
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zomato
+  template:
+    metadata:
+      labels:
+        app: zomato
+    spec:
+      containers:
+        - name: cont1
+          image: shaikmustafa/cycle
+          ports:
+            - containerPort: 80
