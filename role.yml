@@ -1,4 +1,5 @@
----this manifest is about the giving the objects and their permission level that we can assign to a user
+---this manifest is about the giving the objects and their permission level that we can assign to a user---
+---remember this applies only for one namespace---for multiple namespaces use clusterrole--
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
