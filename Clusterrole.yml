@@ -1,4 +1,4 @@
----
+---Defining the objects access and permission levels inside a kubernetes cluster for all namespaces---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
