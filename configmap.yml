@@ -1,0 +1,10 @@
+---defining all required environment file that we have to pass into containers---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fourthcm
+data:
+  DB_NAME: "prodb"
+  DB_PORT: "3306"
+  USER: "Siva"
+  ENV: "production"
