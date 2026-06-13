@@ -1,3 +1,4 @@
+---Attaching the volumes for both containers to achieve data persistence and the volume is from EBS
 ---
 apiVersion: apps/v1
 kind: Deployment
