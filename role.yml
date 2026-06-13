@@ -1,4 +1,4 @@
----
+---this manifest is about the giving the objects and their permission level that we can assign to a user
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
