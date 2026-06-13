@@ -1,4 +1,5 @@
----
+---Assigning the all permissions that we set in cluster role and assigning those to a user/service level (Jenkins) to automate the 
+ci/cd process without disruptions---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
