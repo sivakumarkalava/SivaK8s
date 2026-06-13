@@ -5,6 +5,9 @@ metadata:
   name: mustafa-role
   namespace: dev
 rules:
+  - apiGroups: [""]
+    resources: ["pods", "deployments", "services"]
+    verbs: ["list", "get", "watch", "create", "delete"]
   - apiGroups: ["apps", ""]
     resources: ["pods", "deployments", "services"]
     verbs: ["list", "get", "watch", "create", "delete"]
