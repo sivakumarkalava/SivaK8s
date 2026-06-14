@@ -1,0 +1,13 @@
+---these are the instructions to define resources to a namespace
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-rq
+  namespace: dev
+spec:
+  hard:
+    limits.cpu: "500m"
+    requests.cpu: "490m"
+    limits.memory: "500Mi"
+    requests.memory: "450Mi"
