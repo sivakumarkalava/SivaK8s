@@ -1,0 +1,22 @@
+---Apply taint to nodeid
+kubectl taint node i-01f4ecf92f2bd2631 app=db:NoSchedule
+---pod with tolerance
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod6
+spec:
+  tolerations:
+    - key: "app"
+      operator: "Equal"
+      value: "db"
+      effect: "NoSchedule"
+  containers:
+    - name: cont1
+      image: nginx
+      ports:
+        - containerPort: 80
+-----
+Now the pods will prefer to create pods in this pod first i-01f4ecf92f2bd2631 then proceed for other nodes. other pods without tolerance
+will not create in this node as this node is tainted. but pods with tolerance had a chance to create in other nodes where there is no taint.
+only difference is that nodes with taint has first preference of pods with tolerance
