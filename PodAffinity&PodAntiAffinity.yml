@@ -1,0 +1,64 @@
+---here we are defining pods should create in same node where the other pod is created. example we taken as app pod should create
+where db pod is created to attain low latency
+dbpod.yml
+---------------------------------
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dbpod
+  labels:
+    layer: db
+spec:
+  containers:
+    - name: cont1
+      image: nginx
+      ports:
+        - containerPort: 80
+-------------------------------------------------------------------------------------------------------
+---app pod with db pod labels
+app.yml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod154
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+       - labelSelector:
+           matchExpressions:
+             - key: layer
+               operator: In
+               values:
+                 - db
+         topologyKey: kubernetes.io/hostname
+  containers:
+    - name: cont1
+      image: nginx
+      ports:
+        - containerPort: 80
+---------------------------------------------------------------------------------------------------------------
+---podAntiAffinity: here we are defing app pods should create in node where db pod is not created, just podAffinity changes to podAntiAffinity in yaml file
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod154
+spec:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+       - labelSelector:
+           matchExpressions:
+             - key: layer
+               operator: In
+               values:
+                 - db
+         topologyKey: kubernetes.io/hostname
+  containers:
+    - name: cont1
+      image: nginx
+      ports:
+        - containerPort: 80
