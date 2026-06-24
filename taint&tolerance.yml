@@ -1,5 +1,7 @@
 ---Apply taint to nodeid
 kubectl taint node i-01f4ecf92f2bd2631 app=db:NoSchedule
+---untaint node
+ kubectl taint node i-01f4ecf92f2bd2631 app=db:NoSchedule-
 ---pod with tolerance
 apiVersion: v1
 kind: Pod
