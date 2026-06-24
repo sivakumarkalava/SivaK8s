@@ -1,0 +1,48 @@
+----here we are defining the pods in which node they should create by using labels to nodes and pods
+labeling node--->kubectl label node i-01f4ecf92f2bd2631 instance=logs
+--------creating pod with node label
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod200
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: instance
+                operator: In
+                values:
+                  - logs
+  containers:
+    - name: cont1
+      image: nginx
+      ports:
+        - containerPort: 80
+
+
+-------this is the scenario where at worst cases our defined node is out of resources or cannot create pods in that node, the pod will
+create in another node rather than going to pending state. only difference is preferredDuringSchedulingIgnoredDuringExecution and some below
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod162
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: instance
+                operator: In
+                values:
+                  - logs
+  containers:
+    - name: cont1
+      image: nginx
+      ports:
+        - containerPort: 80
+---above here the pod will create in another node only when there are no enough resources in assigned node, if enough resource is available
+and node is healthy pod will create in that node only as that is preferred
