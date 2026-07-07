@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+    tools {
+        maven 'mymaven'
+    }
+    stages {
+        stage('CleanWS') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage ('Code') {
+            steps {
+                git "https://github.com/sivakumarkalava/dockerwebapp.git"
+            }
+        }
+        stage ("Build") {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage ('CQA') {
+            steps {
+                 withSonarQubeEnv('mysonar') {
+                    sh "mvn clean verify sonar:sonar -Dsonar.projectKey=Myproject"
+                 }
+            }
+        }
+        stage ('QualityGates') {
+            steps {
+                waitForQualityGate abortPipeline: true, credentialsId: 'sonarcreds'
+            }
+        }
+        stage ('Artifact') {
+            steps {
+               script {
+                   def pom = readMavenPom file: 'pom.xml'
+                   nexusArtifactUploader artifacts: [[artifactId: "$pom.artifactId", classifier: '', file: "target/${pom.artifactId}-${pom.version}.war", type: 'war']], credentialsId: 'nexus', groupId: "$pom.groupId", nexusUrl: '54.162.97.86:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'myrepo', version: "$pom.version"               }
+            }
+        }
+        stage ('Image') {
+            steps {
+                sh 'docker build -t sivadockerz/k8sproject:dbimage Docker-db'
+                sh 'cp -r target Docker-app'
+                sh 'docker build -t sivadockerz/k8sproject:appimage Docker-app'
+            }
+        }
+        stage ('Scan') {
+            steps {
+                sh 'trivy image sivadockerz/k8sproject:dbimage'
+                sh 'trivy image sivadockerz/k8sproject:appimage'
+            }
+        }
+        stage ('Registry') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockercreds') {
+                        sh 'docker push sivadockerz/k8sproject:dbimage'
+                        sh 'docker push sivadockerz/k8sproject:appimage'
+                    }
+                }
+            }
+        }
+    }
+}
