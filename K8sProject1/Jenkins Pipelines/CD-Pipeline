@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Code') {
+            steps {
+                git 'https://github.com/sivakumarkalava/dockerwebapp.git'
+            }
+        }
+        stage ('Deploy') {
+            steps {
+                withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'EKS-1', contextName: '', credentialsId: 'eks', namespace: 'webapps', serverUrl: 'https://EE7E79A7720CB2A107EEC0BE99AC5573.gr7.us-east-1.eks.amazonaws.com']]) {
+                    sh 'kubectl apply -f manifests'
+                }
+            }
+        }
+    }
+}
